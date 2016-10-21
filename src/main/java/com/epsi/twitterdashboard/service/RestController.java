@@ -21,7 +21,7 @@ public class RestController {
     @GET
     @Path("/{param}")
     /**
-     * M�thode de test pour un appel de service REST avec RESTeasy
+     * Méthode de test pour un appel de service REST avec RESTeasy
      * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/{param}
      */
     public Response printMessage(@PathParam("param") String msg) {
@@ -34,8 +34,8 @@ public class RestController {
     @GET
     @Path("/get")
     /**
-     * M�thode de test pour un appel de service REST avec RESTeasy
-     * Renvoi la r�f�rence d'un objet Java
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Renvoi la référence d'un objet Java
      * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/get
      */
     public Tweet obj() {
@@ -45,8 +45,8 @@ public class RestController {
     @GET
     @Path("/getJson")
     /**
-     * M�thode de test pour un appel de service REST avec RESTeasy
-     * Renvoi un objet Java pars� en JSON => /!\ Les getters sont requis pour parser les propri�t�s
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Renvoi un objet Java parsé en JSON => /!\ Les getters sont requis pour parser les propriétés
      * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/getJSon
      */
     public String objJson() {
@@ -56,8 +56,8 @@ public class RestController {
     @GET
     @Path("/getJson/{body}")
     /**
-     * M�thode de test pour un appel de service REST avec RESTeasy
-     * Renvoi un objet Java pars� en JSON => /!\ Les getters sont requis pour parser les propri�t�s
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Renvoi un objet Java parsé en JSON => /!\ Les getters sont requis pour parser les propriétés
      * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/getJSon/{body}
      */
     public String objJsonWithBody(@PathParam("body") String body) {
@@ -67,7 +67,7 @@ public class RestController {
     @GET
     @Path("/timeline")
     /**
-     * Renvoi la timeline du compte configur� dans TwitterApi
+     * Renvoi la timeline du compte configuré dans TwitterApi
      */
     public String getTimeline() throws TwitterException {
         Twitter twitter = TwitterApi.Authenticate();
