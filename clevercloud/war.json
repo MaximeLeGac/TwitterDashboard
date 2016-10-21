@@ -8,13 +8,8 @@
     "war": [
       {
         "file": "target/twitter-dashboard-1.0-SNAPSHOT.war",
-        "context": "/get",
-        "checkMe": "/app1/ping"
-      },
-      {
-        "file": "my-second-app.war",
-        "context": "/app2",
-        "checkMe": "/app2/web/foobar"
+        "context": "/",
+        "checkMe": "/get"
       }
     ]
   }
