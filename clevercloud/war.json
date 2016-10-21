@@ -8,8 +8,7 @@
     "war": [
       {
         "file": "target/twitter-dashboard-1.0-SNAPSHOT.war",
-        "context": "/",
-        "checkMe": "/rest/get"
+        "context": "/"
       }
     ]
   }
