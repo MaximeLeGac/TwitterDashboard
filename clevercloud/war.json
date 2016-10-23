@@ -1,0 +1,15 @@
+{
+  "build": {
+    "type": "maven",
+    "goal": "package"
+  },
+  "deploy": {
+    "container": "TOMCAT8",
+    "war": [
+      {
+        "file": "target/twitter-dashboard-1.0-SNAPSHOT.war",
+        "context": "/"
+      }
+    ]
+  }
+}
