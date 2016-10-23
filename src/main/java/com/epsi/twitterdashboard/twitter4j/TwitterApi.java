@@ -1,30 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.epsi.twitterdashboard.twitter4j;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.util.List;
-
 /**
- * Classe de test de l'API Twitter4j
- *
+ * Classe de configuration de l'API Twitter4j
  * @author Allan
  */
 public class TwitterApi {
     
+    /**
+     * Twitter Instance
+     */
     private static Twitter Instance = null;
 
     /**
-     * Authentifie l'utilisateur sur Twitter
-     *
-     * @return L'instance Twitter initialis� avec l'utilisateur authentifi�
+     * Authenticate user and initialise Twitter Instance
      */
     public static void Authenticate() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -39,7 +31,7 @@ public class TwitterApi {
     
     /**
      * Handle TwitterApi instance singleton
-     * @return 
+     * @return Twitter Instance
      */
     public static Twitter GetInstance() {
         if (TwitterApi.Instance == null) {

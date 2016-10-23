@@ -10,12 +10,5 @@
 </head>
     <body>
         <h1>Timeline</h1>
-        <table>
-          <core:forEach items="${tweets}" var="tweet">
-            <tr>
-              <td><core:out value="${tweet}" /></td>
-            </tr>
-          </core:forEach>
-        </table>
     </body>
 </html>
