@@ -18,32 +18,33 @@ import java.util.List;
  * @author Allan
  */
 public class TwitterApi {
+    
+    private static Twitter Instance = null;
 
     /**
      * Authentifie l'utilisateur sur Twitter
      *
      * @return L'instance Twitter initialis� avec l'utilisateur authentifi�
      */
-    public static Twitter Authenticate() {
+    public static void Authenticate() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
-        // Get OAuth from Twitter Application Registration
         cb.setDebugEnabled(true)
-                .setOAuthConsumerKey("*********************")
-                .setOAuthConsumerSecret("******************************************")
-                .setOAuthAccessToken("**************************************************")
-                .setOAuthAccessTokenSecret("******************************************");
+            .setOAuthConsumerKey("RAfoVr8OZR6X1UxkToVbRD5zI")
+            .setOAuthConsumerSecret("KMQexOiK25A1g3R0ZbDFPZi4PMnjNkG7hw7qvUM9ZKClHyW4N6")
+            .setOAuthAccessToken("473004867-fImVTJxSFYBPOt1t4G7kVUq0mUYIcDpORykUo6Qx")
+            .setOAuthAccessTokenSecret("O2ethhUa0rNkUf9sxKAP10XvDgEaJr3LsUJiUHYS0ktdu");
         TwitterFactory tf = new TwitterFactory(cb.build());
-        return tf.getInstance();
+        TwitterApi.Instance = tf.getInstance();
     }
-
+    
     /**
-     * Retourne la timeline de l'instance Twitter en entr�e
-     *
-     * @param twitter
-     * @return
-     * @throws TwitterException
+     * Handle TwitterApi instance singleton
+     * @return 
      */
-    public static List getTimeline(Twitter twitter) throws TwitterException {
-        return twitter.getHomeTimeline();
+    public static Twitter GetInstance() {
+        if (TwitterApi.Instance == null) {
+            TwitterApi.Authenticate();
+        }
+        return TwitterApi.Instance;
     }
 }
