@@ -2,6 +2,8 @@ package com.epsi.twitterdashboard.service;
 
 import com.epsi.twitterdashboard.model.Tweet;
 import com.epsi.twitterdashboard.twitter4j.TwitterApi;
+import java.util.List;
+import javax.servlet.jsp.PageContext;
 import org.json.JSONObject;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -9,20 +11,20 @@ import twitter4j.TwitterException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 /**
  * @author Alexandre
- *         REST Examples => https://www.mkyong.com/webservices/jax-rs/resteasy-hello-world-example/
+ * REST Examples => https://www.mkyong.com/webservices/jax-rs/resteasy-hello-world-example/
  */
-@Path("/controller")
 public class RestController {
 
     @GET
     @Path("/{param}")
     /**
-     * MÃ©thode de test pour un appel de service REST avec RESTeasy
-     * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/{param}
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Accessible via : http://epsi-i4-twitterdashboard.cleverapps.io/{param}
      */
     public Response printMessage(@PathParam("param") String msg) {
         // Utilisation des codes de retour http (SC_OK = 200)
@@ -34,9 +36,9 @@ public class RestController {
     @GET
     @Path("/get")
     /**
-     * MÃ©thode de test pour un appel de service REST avec RESTeasy
-     * Renvoi la rÃ©fÃ©rence d'un objet Java
-     * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/get
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Renvoi la référence d'un objet Java
+     * Accessible via : http://epsi-i4-twitterdashboard.cleverapps.io/get
      */
     public Tweet obj() {
         return new Tweet("test new tweet");
@@ -45,9 +47,9 @@ public class RestController {
     @GET
     @Path("/getJson")
     /**
-     * MÃ©thode de test pour un appel de service REST avec RESTeasy
-     * Renvoi un objet Java parsÃ© en JSON => /!\ Les getters sont requis pour parser les propriÃ©tÃ©s
-     * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/getJSon
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Renvoi un objet Java parsé en JSON => /!\ Les getters sont requis pour parser les propriétés
+     * Accessible via : http://epsi-i4-twitterdashboard.cleverapps.io/rest/getJSon
      */
     public String objJson() {
         return new JSONObject(new Tweet("test new tweet")).toString();
@@ -56,9 +58,9 @@ public class RestController {
     @GET
     @Path("/getJson/{body}")
     /**
-     * MÃ©thode de test pour un appel de service REST avec RESTeasy
-     * Renvoi un objet Java parsÃ© en JSON => /!\ Les getters sont requis pour parser les propriÃ©tÃ©s
-     * Accessible via : http://localhost:8080/TwitterDashboard/rest/controller/getJSon/{body}
+     * Méthode de test pour un appel de service REST avec RESTeasy
+     * Renvoi un objet Java parsé en JSON => /!\ Les getters sont requis pour parser les propriétés
+     * Accessible via : http://epsi-i4-twitterdashboard.cleverapps.io/rest/getJSon/{body}
      */
     public String objJsonWithBody(@PathParam("body") String body) {
         return new JSONObject(new Tweet(body)).toString();
@@ -67,11 +69,10 @@ public class RestController {
     @GET
     @Path("/timeline")
     /**
-     * Renvoi la timeline du compte configurÃ© dans TwitterApi
+     * Renvoi la timeline du compte configuré dans TwitterApi
      */
-    public String getTimeline() throws TwitterException {
-        Twitter twitter = TwitterApi.Authenticate();
-        return new JSONObject(TwitterApi.getTimeline(twitter)).toString();
+    public List GetTimeline() throws TwitterException {
+        return TwitterApi.GetInstance().getHomeTimeline();
     }
     
     /*@GET
