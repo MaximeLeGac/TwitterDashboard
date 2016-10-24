@@ -27,50 +27,17 @@ public class RestTwitterApi {
     public static String ConsumerSecret = "KMQexOiK25A1g3R0ZbDFPZi4PMnjNkG7hw7qvUM9ZKClHyW4N6";
     public static String TwitterAppName = "epsi-twitterdashboard";
     
-    public static String VanbleusaToken = "fImVTJxSFYBPOt1t4G7kVUq0mUYIcDpORykUo6Qx";
-    public static String VanbleusaTokenSecret = "O2ethhUa0rNkUf9sxKAP10XvDgEaJr3LsUJiUHYS0ktdu";
-    
-    /**
-     * Twitter Instance
-     */
-    private static Twitter Instance = null;
-    
-    
-    /**
-     * Handle TwitterApi instance singleton
-     * @return Twitter Instance
-     */
-    public static Twitter GetInstance() {
-        if (RestTwitterApi.Instance == null) {
-            RestTwitterApi.InitInstance();
-        }
-        return RestTwitterApi.Instance;
-    }
-
-    /**
-     * Initialise Twitter Instance
-     */
-    private static void InitInstance() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-            .setOAuthConsumerKey(RestTwitterApi.ConsumerKey)
-            .setOAuthConsumerSecret(RestTwitterApi.ConsumerSecret)
-            .setOAuthAccessToken(RestTwitterApi.VanbleusaToken)
-            .setOAuthAccessTokenSecret(RestTwitterApi.VanbleusaTokenSecret);
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        RestTwitterApi.Instance = tf.getInstance();
-    }
-    
     /**
      * Fetches the first tweet from a given user's timeline
+     * @param username
      * @return
      * @throws IOException 
      * @throws JSONException 
      */
-    public static String FetchTimeline() throws IOException, JSONException {
+    public static String FetchTimeline(String username) throws IOException, JSONException {
         HttpsURLConnection connection = null;
         try {
-            URL url = new URL("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=%3Cusername%3E&count=50"); 
+            URL url = new URL("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + username + "&count=50"); 
             connection = (HttpsURLConnection) url.openConnection();           
             connection.setDoOutput(true);
             connection.setDoInput(true); 
