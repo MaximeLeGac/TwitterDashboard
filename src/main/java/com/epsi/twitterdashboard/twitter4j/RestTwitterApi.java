@@ -13,9 +13,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.codec.binary.Base64;
 import twitter4j.JSONObject;
 import twitter4j.JSONException;
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Classe de configuration de l'API Twitter4j
@@ -26,6 +23,7 @@ public class RestTwitterApi {
     public static String ConsumerKey = "RAfoVr8OZR6X1UxkToVbRD5zI";
     public static String ConsumerSecret = "KMQexOiK25A1g3R0ZbDFPZi4PMnjNkG7hw7qvUM9ZKClHyW4N6";
     public static String TwitterAppName = "epsi-twitterdashboard";
+    public static String BearerToken = null;
     
     /**
      * Fetches the first tweet from a given user's timeline
@@ -61,6 +59,47 @@ public class RestTwitterApi {
     }
     
     /**
+     * Requests and returns a bearer token from twitter
+     * @return bearer token
+     * @throws IOException
+     * @throws JSONException 
+     */
+    private static String GetBearerToken() throws IOException, JSONException {
+        if (RestTwitterApi.BearerToken == null) {
+            HttpsURLConnection connection = null;
+            try {
+                URL url = new URL("https://api.twitter.com/oauth2/token"); 
+                connection = (HttpsURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setDoInput(true); 
+                connection.setRequestMethod("POST"); 
+                connection.setRequestProperty("Host", "api.twitter.com");
+                connection.setRequestProperty("User-Agent", "Twitter Dashboard");
+                connection.setRequestProperty("Authorization", "Basic " + GetAuthorizationKey());
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"); 
+                connection.setRequestProperty("Content-Length", "29");
+                connection.setUseCaches(false);
+                WriteRequest(connection, "grant_type=client_credentials");
+
+                // Parse the JSON response into a JSON mapped object to fetch fields from.
+                JSONObject obj = new JSONObject(ReadResponse(connection));
+                String tokenType = (String)obj.get("token_type");
+                String token = (String)obj.get("access_token");
+                RestTwitterApi.BearerToken = ((tokenType.equals("bearer")) && (token != null)) ? token : null;
+            }
+            catch (MalformedURLException e) {
+                throw new IOException("Invalid endpoint URL specified.", e);
+            }
+            finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }
+        return RestTwitterApi.BearerToken;
+    }
+    
+    /**
      * Get authorization key from current parameters
      * @return authorization key
      * @throws UnsupportedEncodingException
@@ -71,44 +110,6 @@ public class RestTwitterApi {
         String fullKey = encodedConsumerKey + ":" + encodedConsumerSecret;
         byte[] encodedBytes = Base64.encodeBase64(fullKey.getBytes());
         return new String(encodedBytes); 
-    }
-    
-    /**
-     * Requests and returns a bearer token from twitter
-     * @return bearer token
-     * @throws IOException
-     * @throws JSONException 
-     */
-    private static String GetBearerToken() throws IOException, JSONException {
-	HttpsURLConnection connection = null;
-        try {
-            URL url = new URL("https://api.twitter.com/oauth2/token"); 
-            connection = (HttpsURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setDoInput(true); 
-            connection.setRequestMethod("POST"); 
-            connection.setRequestProperty("Host", "api.twitter.com");
-            connection.setRequestProperty("User-Agent", "Twitter Dashboard");
-            connection.setRequestProperty("Authorization", "Basic " + GetAuthorizationKey());
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"); 
-            connection.setRequestProperty("Content-Length", "29");
-            connection.setUseCaches(false);
-            WriteRequest(connection, "grant_type=client_credentials");
-
-            // Parse the JSON response into a JSON mapped object to fetch fields from.
-            JSONObject obj = new JSONObject(ReadResponse(connection));
-            String tokenType = (String)obj.get("token_type");
-            String token = (String)obj.get("access_token");
-            return ((tokenType.equals("bearer")) && (token != null)) ? token : "";
-	}
-	catch (MalformedURLException e) {
-            throw new IOException("Invalid endpoint URL specified.", e);
-	}
-	finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-	}
     }
     
     /**
