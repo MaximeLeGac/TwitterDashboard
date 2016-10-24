@@ -23,7 +23,7 @@ public class RestController {
      * Get specific user timeline
      */
     public String FetchTimeline(@PathParam("username") String username) throws TwitterException, IOException, JSONException {
-        return RestTwitterApi.FetchTimeline(username);
+        return RestTwitterApi.FetchTimeline(username, -1);
     }
 
     @POST

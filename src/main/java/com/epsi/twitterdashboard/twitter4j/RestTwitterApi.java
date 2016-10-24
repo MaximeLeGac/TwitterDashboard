@@ -26,16 +26,18 @@ public class RestTwitterApi {
     public static String BearerToken = null;
     
     /**
-     * Fetches the first tweet from a given user's timeline
+     * Fetches the first tweets from a given user's timeline
      * @param username
+     * @param numberLimit
      * @return
      * @throws IOException 
      * @throws JSONException 
      */
-    public static String FetchTimeline(String username) throws IOException, JSONException {
+    public static String FetchTimeline(String username, int numberLimit) throws IOException, JSONException {
         HttpsURLConnection connection = null;
+        String tweets = "";
         try {
-            URL url = new URL("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + username + "&count=50"); 
+            URL url = new URL("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + username + (numberLimit > 0 ? "&count=" + numberLimit : "")); 
             connection = (HttpsURLConnection) url.openConnection();           
             connection.setDoOutput(true);
             connection.setDoInput(true); 
@@ -44,9 +46,7 @@ public class RestTwitterApi {
             connection.setRequestProperty("User-Agent", RestTwitterApi.TwitterAppName);
             connection.setRequestProperty("Authorization", "Bearer " + GetBearerToken());
             connection.setUseCaches(false);
-            JSONObject obj = new JSONObject(ReadResponse(connection));
-            String tweet = ((JSONObject)obj.get("0")).get("text").toString();
-            return (tweet != null) ? tweet : "";
+            tweets = ReadResponse(connection);
         }
         catch (MalformedURLException e) {
             throw new IOException("Invalid endpoint URL specified.", e);
@@ -56,6 +56,7 @@ public class RestTwitterApi {
                 connection.disconnect();
             }
         }
+        return tweets;
     }
     
     /**

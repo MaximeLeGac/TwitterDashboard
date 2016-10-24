@@ -15,8 +15,9 @@ public class Tweet {
     // ************************************
 
 
-    // ********** CONSTRUCTOR **********
-
+    // ********* CONSTRUCTORS *********
+    public Tweet() {}
+    
     /**
      * Constructeur de Tweet
      *
@@ -25,7 +26,7 @@ public class Tweet {
     public Tweet(String pBody) {
         this.body = pBody;
     }
-    // *********************************
+    // ********************************
 
 
     // ********** ACCESSORS **********
