@@ -1,20 +1,18 @@
 package com.epsi.twitterdashboard.service;
 
 import com.epsi.twitterdashboard.model.Tweet;
-import com.epsi.twitterdashboard.twitter4j.TwitterApi;
+import com.epsi.twitterdashboard.twitter4j.RestTwitterApi;
 import java.util.List;
 import javax.ws.rs.Consumes;
-import org.json.JSONObject;
 import twitter4j.TwitterException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 /**
- * @author Alexandre
+ * @author Allan
  * REST Examples => https://www.mkyong.com/webservices/jax-rs/resteasy-hello-world-example/
  */
 @Path("rest")
@@ -52,6 +50,6 @@ public class RestController {
      * CleverCloud  : http://epsi-i4-twitterdashboard.cleverapps.io/rest/timeline/
      */
     public List GetTimeline() throws TwitterException {
-        return TwitterApi.GetInstance().getHomeTimeline();
+        return RestTwitterApi.GetInstance().getHomeTimeline();
     }
 }
