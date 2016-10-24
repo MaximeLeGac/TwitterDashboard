@@ -1,52 +1,39 @@
 package com.epsi.twitterdashboard.model;
 
+import java.util.Date;
+
 /**
- * Model de Tweet
- *
+ * Tweet model
  * @author Allan
  */
 public class Tweet {
 
     // ********** PRIVATE FIELDS **********
-    /**
-     * Bodu du Tweet
-     */
-    private String body;
+    private String Body;
+    private Date CreationDate;
+    private User User;
     // ************************************
 
-
-    // ********* CONSTRUCTORS *********
-    public Tweet() {}
-    
-    /**
-     * Constructeur de Tweet
-     *
-     * @param pBody body du Tweet
-     */
-    public Tweet(String pBody) {
-        this.body = pBody;
-    }
-    // ********************************
-
-
     // ********** ACCESSORS **********
-
-    /**
-     * Getter du body du Tweet
-     *
-     * @return Le body du Tweet
-     */
     public String getBody() {
-        return body;
+        return Body;
     }
-
-    /**
-     * Setter du body du Tweet
-     *
-     * @param body nouveau body du Tweet
-     */
     public void setBody(String body) {
-        this.body = body;
+        this.Body = body;
+    }
+    
+    public Date getCreationDate() {
+        return CreationDate;
+    }
+    public void setCreationDate(Date CreationDate) {
+        this.CreationDate = CreationDate;
+    }
+    
+    public User getUser() {
+        return User;
+    }
+    public void setUser(User User) {
+        this.User = User;
     }
     // *******************************
 }
