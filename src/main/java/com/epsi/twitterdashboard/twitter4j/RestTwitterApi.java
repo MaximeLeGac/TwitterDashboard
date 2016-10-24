@@ -1,5 +1,7 @@
 package com.epsi.twitterdashboard.twitter4j;
 
+import com.epsi.twitterdashboard.model.Tweet;
+import com.epsi.twitterdashboard.parser.TwitterParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.codec.binary.Base64;
 import twitter4j.JSONObject;
@@ -33,7 +36,7 @@ public class RestTwitterApi {
      * @throws IOException 
      * @throws JSONException 
      */
-    public static String FetchTimeline(String username, int numberLimit) throws IOException, JSONException {
+    public static List<Tweet> FetchTimeline(String username, int numberLimit) throws IOException, JSONException {
         HttpsURLConnection connection = null;
         String tweets = "";
         try {
@@ -56,7 +59,7 @@ public class RestTwitterApi {
                 connection.disconnect();
             }
         }
-        return tweets;
+        return TwitterParser.ParseTweets(tweets);
     }
     
     /**
