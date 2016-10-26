@@ -26,11 +26,17 @@
         <servlet-class>
             org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
         </servlet-class>
+        
+        <servlet-name>controllerTimeline</servlet-name>  
+        <servlet-class>com.epsi.twitterdashboard.controller.ControllerTimeline</servlet-class> 
     </servlet>
 
     <servlet-mapping>
         <servlet-name>resteasy-servlet</servlet-name>
         <url-pattern>/dash/*</url-pattern>
+        
+        <servlet-name>controllerTimeline</servlet-name>  
+        <url-pattern>/ControllerTimeline</url-pattern>  
     </servlet-mapping>
 
     <session-config>
