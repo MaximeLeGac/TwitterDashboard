@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.commons.codec.binary.Base64;
@@ -35,8 +36,9 @@ public class RestTwitterApi {
      * @return
      * @throws IOException 
      * @throws JSONException 
+     * @throws ParseException 
      */
-    public static List<Tweet> FetchTimeline(String username, int numberLimit) throws IOException, JSONException {
+    public static List<Tweet> FetchTimeline(String username, int numberLimit) throws IOException, JSONException, ParseException {
         HttpsURLConnection connection = null;
         String tweets = "";
         try {

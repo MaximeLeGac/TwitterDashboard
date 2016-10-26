@@ -43,7 +43,7 @@ public class TwitterParser {
         List<Tweet> tweets = new ArrayList();
         for (int i=0; i<jsonArray.length(); i++) {
             JSONObject json = jsonArray.getJSONObject(i);
-            tweets.add(InitializeTweet(new JSONObject(json)));
+            tweets.add(InitializeTweet(json));
         }
         return tweets;
     }
@@ -59,6 +59,9 @@ public class TwitterParser {
         // Initialize object
         Tweet tweet = new Tweet();
         
+        // Id property
+        tweet.setId(json.getInt("id"));
+        
         // Text property
         tweet.setBody(json.getString("text"));
         
@@ -71,14 +74,41 @@ public class TwitterParser {
         JSONObject userJson = json.getJSONObject("user");
         tweet.setUser(InitializeUser(userJson));
         
+        // Mentions property
+        List<User> mentions = new ArrayList();
+        JSONArray mentionsJson = json.getJSONArray("entities.user_mentions");
+        for (int i=0; i<mentionsJson.length(); i++) {
+            JSONObject mentionjson = mentionsJson.getJSONObject(i);
+            mentions.add(InitializeUser(mentionjson));
+        }
+        tweet.setMentions(mentions);
+        
         return tweet;
     }
     
-    private static User InitializeUser(JSONObject json) {
+    /**
+     * Initialize user object from JSONObject properties
+     * @param json
+     * @return 
+     */
+    private static User InitializeUser(JSONObject json) throws JSONException {
         // Initialize object
         User user = new User();
         
-        //user.setBody(json.getString("text"));
+        // Id property
+        user.setId(json.getInt("id"));
+        
+        // Name property
+        user.setName(json.getString("name"));
+        
+        // ScreenName property
+        user.setScreenName(json.getString("screen_name"));
+        
+        // Location property
+        user.setLocation(json.getString("location"));
+        
+        // Description property
+        user.setDescription(json.getString("description"));
         
         return user;
     }

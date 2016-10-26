@@ -1,6 +1,7 @@
 package com.epsi.twitterdashboard.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Tweet model
@@ -9,12 +10,21 @@ import java.util.Date;
 public class Tweet {
 
     // ********** PRIVATE FIELDS **********
+    private int id;
     private String Body;
     private Date CreationDate;
     private User User;
+    private List<User> Mentions;
     // ************************************
 
     // ********** ACCESSORS **********
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public String getBody() {
         return Body;
     }
@@ -34,6 +44,13 @@ public class Tweet {
     }
     public void setUser(User User) {
         this.User = User;
+    }
+    
+    public List<User> getMentions() {
+        return Mentions;
+    }
+    public void setMentions(List<User> mentions) {
+        this.Mentions = mentions;
     }
     // *******************************
 }
