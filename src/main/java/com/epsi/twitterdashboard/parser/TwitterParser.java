@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
@@ -21,10 +23,9 @@ public class TwitterParser {
      * Parse a json tweet to Java object
      * @param tweetJson
      * @return
-     * @throws JSONException 
-     * @throws ParseException 
+     * @throws JSONException
      */
-    public static Tweet ParseTweet(String tweetJson) throws JSONException, ParseException {
+    public static Tweet ParseTweet(String tweetJson) throws JSONException {
         return InitializeTweet(new JSONObject(tweetJson));
     }
     
@@ -32,10 +33,9 @@ public class TwitterParser {
      * Parse a list of json tweet to Java list of object
      * @param tweetsJson
      * @return
-     * @throws JSONException 
-     * @throws ParseException 
+     * @throws JSONException
      */
-    public static List<Tweet> ParseTweets(String tweetsJson) throws JSONException, ParseException {
+    public static List<Tweet> ParseTweets(String tweetsJson) throws JSONException {
         // Parse JSON to Java list
         JSONArray jsonArray = new JSONArray(tweetsJson);
         
@@ -55,33 +55,56 @@ public class TwitterParser {
      * @throws JSONException 
      * @throws ParseException 
      */
-    private static Tweet InitializeTweet(JSONObject json) throws JSONException, ParseException {
+    private static Tweet InitializeTweet(JSONObject json) {
         // Initialize object
         Tweet tweet = new Tweet();
         
         // Id property
-        tweet.setId(json.getInt("id"));
+        try {
+            tweet.setId(json.getInt("id"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         // Text property
-        tweet.setBody(json.getString("text"));
+        try {
+            tweet.setBody(json.getString("text"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         // Creation date property
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date creationDate = sdf.parse(json.getString("created_at"));
-        tweet.setCreationDate(creationDate);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date creationDate = sdf.parse(json.getString("created_at"));
+            tweet.setCreationDate(creationDate);
+        } catch (ParseException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         // User property
-        JSONObject userJson = json.getJSONObject("user");
-        tweet.setUser(InitializeUser(userJson));
+        try {
+            JSONObject userJson = json.getJSONObject("user");
+            tweet.setUser(InitializeUser(userJson));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         // Mentions property
-        List<User> mentions = new ArrayList();
-        JSONArray mentionsJson = json.getJSONArray("entities.user_mentions");
-        for (int i=0; i<mentionsJson.length(); i++) {
-            JSONObject mentionjson = mentionsJson.getJSONObject(i);
-            mentions.add(InitializeUser(mentionjson));
+        try {
+            List<User> mentions = new ArrayList();
+            JSONObject entitiesJson = json.getJSONObject("entities");
+            JSONArray mentionsJson = entitiesJson.getJSONArray("user_mentions");
+            for (int i=0; i<mentionsJson.length(); i++) {
+                JSONObject mentionjson = mentionsJson.getJSONObject(i);
+                mentions.add(InitializeUser(mentionjson));
+            }
+            tweet.setMentions(mentions);
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tweet.setMentions(mentions);
         
         return tweet;
     }
@@ -91,24 +114,44 @@ public class TwitterParser {
      * @param json
      * @return 
      */
-    private static User InitializeUser(JSONObject json) throws JSONException {
+    private static User InitializeUser(JSONObject json) {
         // Initialize object
         User user = new User();
         
-        // Id property
-        user.setId(json.getInt("id"));
+        try {
+            // Id property
+            user.setId(json.getInt("id"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        // Name property
-        user.setName(json.getString("name"));
+        try {
+            // Name property
+            user.setName(json.getString("name"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        // ScreenName property
-        user.setScreenName(json.getString("screen_name"));
+        try {
+            // ScreenName property
+            user.setScreenName(json.getString("screen_name"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        // Location property
-        user.setLocation(json.getString("location"));
+        try {
+            // Location property
+            user.setLocation(json.getString("location"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        // Description property
-        user.setDescription(json.getString("description"));
+        try {
+            // Description property
+            user.setDescription(json.getString("description"));
+        } catch (JSONException ex) {
+            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         return user;
     }

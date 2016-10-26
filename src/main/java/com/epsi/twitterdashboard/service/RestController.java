@@ -5,11 +5,12 @@ import com.epsi.twitterdashboard.twitter4j.RestTwitterApi;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import twitter4j.TwitterException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import twitter4j.JSONException;
 
 /**
@@ -19,12 +20,12 @@ import twitter4j.JSONException;
 public class RestController {
 
     @GET
-    @Path("/fetchtimeline/{username}?count={count}")
-    @Produces("application/json")
+    @Path("/fetchtimeline/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
     /**
      * Get specific user timeline
      */
-    public List<Tweet> FetchTimeline(@PathParam("username") String username, @PathParam("count") int count) throws TwitterException, IOException, JSONException, ParseException {
+    public List<Tweet> FetchTimeline(@PathParam("username") String username, @QueryParam("count") int count) throws IOException, JSONException, ParseException {
         return RestTwitterApi.FetchTimeline(username, count);
     }
 
