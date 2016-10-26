@@ -21,7 +21,6 @@ public class RestController {
 
     @GET
     @Path("/fetchtimeline/{username}")
-    @Produces(MediaType.APPLICATION_JSON)
     /**
      * Get specific user timeline
      */
