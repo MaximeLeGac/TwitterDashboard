@@ -44,7 +44,7 @@ public class RestController {
      */
     public List<Tweet> Login(String username) throws IOException, JSONException, ParseException {
         List<User> users = JsonFile.ReadUsers();
-        if (ListFinder.FindUserByUsername(users, username) != null) {
+        if (users != null && ListFinder.FindUserByUsername(users, username) != null) {
             return FetchTimeline(username, 0);
         }
         return new ArrayList<Tweet>();
