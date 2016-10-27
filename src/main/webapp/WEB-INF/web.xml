@@ -29,6 +29,12 @@
         
         <servlet-name>controllerTimeline</servlet-name>  
         <servlet-class>com.epsi.twitterdashboard.controller.ControllerTimeline</servlet-class> 
+        
+        <servlet-name>loginController</servlet-name>  
+        <servlet-class>com.epsi.twitterdashboard.controller.LoginController</servlet-class> 
+        
+        <servlet-name>subscribeController</servlet-name>  
+        <servlet-class>com.epsi.twitterdashboard.controller.SubscribeController</servlet-class> 
     </servlet>
 
     <servlet-mapping>
@@ -37,6 +43,12 @@
         
         <servlet-name>controllerTimeline</servlet-name>  
         <url-pattern>/ControllerTimeline</url-pattern>  
+        
+        <servlet-name>loginController</servlet-name>  
+        <url-pattern>/LoginController</url-pattern>  
+        
+        <servlet-name>subscribeController</servlet-name>  
+        <url-pattern>/SubscribeController</url-pattern>  
     </servlet-mapping>
 
     <session-config>
@@ -44,7 +56,7 @@
     </session-config>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
 
 </web-app>

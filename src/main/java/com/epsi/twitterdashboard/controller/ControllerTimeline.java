@@ -37,7 +37,6 @@ public class ControllerTimeline extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");
 
-        RequestDispatcher rd = null;
         RestController restContr = new RestController();
         List<Tweet> listTweets = new ArrayList<Tweet>();
         String[] tabADD = null;
@@ -52,45 +51,11 @@ public class ControllerTimeline extends HttpServlet {
         request.setAttribute("username", username);
         
         try {
-            url = new URL(ControllerTimeline.Local_Url + "dash/rest/fetchtimeline/" + username + "&count=" + 20);
+            url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/fetchtimeline");
             connection = (HttpURLConnection) url.openConnection();
-            tweets = ReadResponse(connection);
+            //tweets = ReadResponse(connection);
             
-            try {
-                listTweets = TwitterParser.ParseTweets(tweets);
-            } catch (JSONException ex) {
-                Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
-            if (listTweets != null && !listTweets.isEmpty()) {
-                request.setAttribute("listTweets", listTweets);
-            }
-        
-/*
-            if (request.getParameter("ADD") != null) {
-                tabADD = request.getParameterValues("ADD");
-            }
-            if (request.getParameter("ADD") != null) {
-                tabDEL = request.getParameterValues("DEL");
-            }
-
-            if (tabADD != null && tabADD.length != 0) {
-                for (int j=0; j<tabADD.length; j++) {
-                    restContr.Bookmark(username, Integer.parseInt(tabADD[j]));
-                    url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/bookmark/" + Integer.parseInt(tabADD[j])); 
-                    connection = (HttpURLConnection) url.openConnection();
-                    ReadResponse(connection);
-                }
-            }
-
-            if (tabDEL != null && tabDEL.length != 0) {
-                for (int j=0; j<tabDEL.length; j++) {
-                    url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/deletebookmark/" + Integer.parseInt(tabDEL[j])); 
-                    connection = (HttpURLConnection) url.openConnection();
-                    ReadResponse(connection);
-                }
-            }
-*/
         } catch (MalformedURLException e) {
             throw new IOException("Invalid endpoint URL specified.", e);
         } finally {
@@ -99,7 +64,7 @@ public class ControllerTimeline extends HttpServlet {
             }
         }
         
-        rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
         rd.forward(request, response); 
         
     }
