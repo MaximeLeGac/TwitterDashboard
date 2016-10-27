@@ -6,14 +6,20 @@
 package com.epsi.twitterdashboard.controller;
 
 import com.epsi.twitterdashboard.model.Tweet;
+import com.epsi.twitterdashboard.parser.TwitterParser;
 import com.epsi.twitterdashboard.service.RestController;
+import java.io.BufferedReader;
 import java.io.IOException;  
+import java.io.InputStreamReader;
 import java.io.PrintWriter;  
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.RequestDispatcher;  
 import javax.servlet.ServletException;  
 import javax.servlet.http.HttpServlet;  
@@ -32,31 +38,58 @@ public class ControllerTimeline extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");  
         //<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core" %>  
-        String username = request.getParameter("username");  
-        
+
         RestController restContr = new RestController();
         List<Tweet> listTweets = new ArrayList<Tweet>();
+        String username = "";
+        URL url = null;
+        HttpURLConnection connection = null;
+        String tweets = "";
         
-        try {
-            
+        if (request.getParameter("username") != null) {
+            username = request.getParameter("username");  
+
             request.setAttribute("username", username);
-            
-            // Récupération de la liste des tweets de la timeline de username
-            listTweets = restContr.FetchTimeline(username, 20);
+            url = new URL("http://localhost:8080/dash/rest/fetchtimeline/username=" + username + "&count=" + 20);
+            connection = (HttpURLConnection) url.openConnection();
+            tweets = ReadResponse(connection);
+            try {
+                listTweets = TwitterParser.ParseDatabase(tweets);
+            } catch (JSONException ex) {
+                Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             if (!(listTweets == null || listTweets.isEmpty())) {
                 request.setAttribute("listTweets", listTweets);
             }
+            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
+            rd.forward(request, response);
+        } else {
+            username = (String) request.getAttribute("username");
+            listTweets = (List<Tweet>) request.getAttribute("listTweets");
+            
+            for (int i = 0; i < listTweets.size(); i++) {
+                String[] tabADD = request.getParameterValues("ADD");
+                String[] tabDEL = request.getParameterValues("DEL");
+                
+                for (int j=0; j<tabADD.length; j++) {
+                    restContr.Bookmark(Integer.parseInt(tabADD[j]));
+                    url = new URL("http://localhost:8080/bookmark/id=" + Integer.parseInt(tabADD[j])); 
+                    connection = (HttpURLConnection) url.openConnection();
+                    ReadResponse(connection);
+                }
+                for (int j=0; j<tabDEL.length; j++) {
+                    url = new URL("http://localhost:8080/deletebookmark/id=" + Integer.parseInt(tabDEL[j])); 
+                    connection = (HttpURLConnection) url.openConnection();
+                    ReadResponse(connection);
+                }
+            }
             
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
-            rd.forward(request, response);  
-            
-        } catch (JSONException ex) {
-            Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
+            rd.forward(request, response); 
         }
-    }  
+        
+    }
   
     @Override  
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)  
@@ -64,5 +97,22 @@ public class ControllerTimeline extends HttpServlet {
         doPost(req, resp);  
     }
     
+
+    /**
+     * Allows to read a http response
+     * @param connection
+     * @return the response as string
+     * @throws IOException
+     */
+    private static String ReadResponse(HttpURLConnection connection) throws IOException {
+        InputStreamReader isr = new InputStreamReader(connection.getInputStream());
+        BufferedReader br = new BufferedReader(isr);
+        StringBuilder str = new StringBuilder();
+        String line;
+        while((line = br.readLine()) != null) {
+            str.append(line).append(System.getProperty("line.separator"));
+        }
+        return str.toString();
+    }
     
 }
