@@ -14,37 +14,42 @@
   <body>
     <h1>Timeline</h1>
     
-    <table>
-        <form action="ControllerTimeline" method="post">
+     <table>
+            <form action="ControllerTimeline" method="post">
+                <tr class="timeline">
+                    
+                    <td>
+                    <%
+                        String uname = (String) request.getAttribute("username");
+                        out.print("<h1>Timeline " + uname + "</h1>");
+                    %>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                            <input class="inputUser" type="text" name="username">
+                            <input type="submit" value="search">  
 
-            <%
-                String uname = (String) request.getAttribute("username");
-                out.print("<h1>" + uname + "</h1>");
-                
-                List<Tweet> listTweets = (List) request.getAttribute("listTweets");
-
-                Iterator it = listTweets.iterator();
-                while(it.hasNext()) {
-                  out.print("<br>Tweet : " + ((Tweet) it.next()).getBody());
-                }
-           %>
-
-            <input type="text" name="username">
-            <input type="submit" value="search">
-
-            <table>
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         <%
-                            List<Tweet> listTweets = (List) request.getAttribute("styles");
-                            Iterator it = listTweets.iterator();
-                            while(it.hasNext()) {
-                              out.print("<br>Tweet : " + ((Tweet) it.next()).getBody());
+                            List<Tweet> listTweets = (List) request.getAttribute("listTweets");
+                            
+                            if (!(listTweets == null || listTweets.isEmpty())) {
+                                for (Tweet tweet : listTweets) {
+                                    out.print("<br>Tweet : " + tweet.getBody());
+                                }
+                            } else {
+                                out.print("<br>Pas de tweet � consulter.");
                             }
+                            
                         %>
                     </td>
                 </tr>
-            </table>
+            </form>
+        </table>
 
         </form>
     
