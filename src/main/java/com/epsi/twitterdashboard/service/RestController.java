@@ -42,7 +42,7 @@ public class RestController {
      * @param username
      * @return
      */
-    public List<Tweet> Login(@PathParam("username") String username) throws IOException, JSONException, ParseException {
+    public List<Tweet> Login(String username) throws IOException, JSONException, ParseException {
         List<User> users = JsonFile.ReadUsers();
         if (ListFinder.FindUserByUsername(users, username) != null) {
             return FetchTimeline(username, 0);

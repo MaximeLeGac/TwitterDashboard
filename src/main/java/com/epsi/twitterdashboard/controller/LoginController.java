@@ -9,6 +9,7 @@ import com.epsi.twitterdashboard.model.Tweet;
 import com.epsi.twitterdashboard.service.RestController;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,18 +27,19 @@ public class LoginController extends HttpServlet {
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");
-        
         String username = request.getParameter("user");
-        List<Tweet> listTweets = null;
+        List<Tweet> listTweets = new ArrayList<Tweet>();
         RestController restContr = new RestController();
+        
         try {
-            listTweets = restContr.Login(username);
+            listTweets.addAll(restContr.Login(username));
         } catch (JSONException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (listTweets != null) {
+        
+        if (!listTweets.isEmpty()) {
             request.setAttribute("listTweets", listTweets);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
             rd.forward(request, response);
@@ -48,18 +50,19 @@ public class LoginController extends HttpServlet {
     @Override  
     protected void doGet(HttpServletRequest request, HttpServletResponse response)   throws ServletException, IOException {  
         response.setContentType("text/html");
-        
         String username = request.getParameter("user");
-        List<Tweet> listTweets = null;
+        List<Tweet> listTweets = new ArrayList<Tweet>();
         RestController restContr = new RestController();
+        
         try {
-            listTweets = restContr.Login(username);
+            listTweets.addAll(restContr.Login(username));
         } catch (JSONException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (listTweets != null) {
+        
+        if (!listTweets.isEmpty()) {
             request.setAttribute("listTweets", listTweets);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
             rd.forward(request, response);
