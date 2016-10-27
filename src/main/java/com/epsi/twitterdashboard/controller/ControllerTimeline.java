@@ -7,8 +7,7 @@ package com.epsi.twitterdashboard.controller;
 
 import com.epsi.twitterdashboard.model.Tweet;
 import com.epsi.twitterdashboard.service.RestController;
-import java.io.IOException;  
-import java.io.PrintWriter;  
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
 import twitter4j.JSONException;
-import twitter4j.TwitterException;
 
 /**
  *
@@ -32,22 +30,18 @@ public class ControllerTimeline extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");  
         //<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core" %>  
-        String username = request.getParameter("username");  
-        
+        String username = request.getParameter("username"); 
         RestController restContr = new RestController();
         List<Tweet> listTweets = new ArrayList<Tweet>();
         
         try {
-            
             request.setAttribute("username", username);
             
             // Recuperation de la liste des tweets de la timeline de username
-            listTweets = restContr.FetchTimeline(username, 20);
-            
-            if (!(listTweets == null || listTweets.isEmpty())) {
+            listTweets.addAll(restContr.FetchTimeline(username, 20));
+            if (!listTweets.isEmpty()) {
                 request.setAttribute("listTweets", listTweets);
             }
-            
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
             rd.forward(request, response);  
             
@@ -63,6 +57,4 @@ public class ControllerTimeline extends HttpServlet {
             throws ServletException, IOException {  
         doPost(req, resp);  
     }
-    
-    
 }
