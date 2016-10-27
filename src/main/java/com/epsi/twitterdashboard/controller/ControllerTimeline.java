@@ -52,9 +52,9 @@ public class ControllerTimeline extends HttpServlet {
         request.setAttribute("username", username);
         
         try {
-            url = new URL(ControllerTimeline.Local_Url + "dash/rest/fetchtimeline/" + username + "&count=" + 20);
+            url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/fetchtimeline&count=" + 20);
             connection = (HttpURLConnection) url.openConnection();
-            tweets = ReadResponse(connection);
+            //tweets = ReadResponse(connection);
             
             try {
                 listTweets = TwitterParser.ParseTweets(tweets);
@@ -66,7 +66,7 @@ public class ControllerTimeline extends HttpServlet {
                 request.setAttribute("listTweets", listTweets);
             }
         
-/*
+            /*
             if (request.getParameter("ADD") != null) {
                 tabADD = request.getParameterValues("ADD");
             }
@@ -90,7 +90,7 @@ public class ControllerTimeline extends HttpServlet {
                     ReadResponse(connection);
                 }
             }
-*/
+            */
         } catch (MalformedURLException e) {
             throw new IOException("Invalid endpoint URL specified.", e);
         } finally {
@@ -105,8 +105,23 @@ public class ControllerTimeline extends HttpServlet {
     }
   
     @Override  
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)   throws ServletException, IOException {  
-        doPost(req, resp);  
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Tweet> listTweets = new ArrayList<Tweet>();
+        String username = request.getParameter("username"); 
+        request.setAttribute("username", username);
+        
+        URL url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/fetchtimeline&count=" + 20);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        
+        try {
+            listTweets.addAll(TwitterParser.ParseTweets(ReadResponse(connection)));
+        } catch (JSONException ex) {
+            Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (!listTweets.isEmpty()) {
+            request.setAttribute("listTweets", listTweets);
+        }
     }
     
     /**

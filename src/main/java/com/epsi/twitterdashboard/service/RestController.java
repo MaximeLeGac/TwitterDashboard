@@ -1,11 +1,16 @@
 package com.epsi.twitterdashboard.service;
 
+import com.epsi.twitterdashboard.model.User;
 import com.epsi.twitterdashboard.utils.JsonFile;
 import com.epsi.twitterdashboard.twitter4j.RestTwitterApi;
+import com.epsi.twitterdashboard.utils.ListFinder;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,6 +23,28 @@ import twitter4j.JSONException;
  */
 @Path("rest")
 public class RestController {
+    
+    @POST
+    @Path("/subscribe")
+    @Consumes("application/json")
+    public void Subscribe(User user) {
+        JsonFile.AddUser(user);
+    }
+    
+    @POST
+    @Path("/login")
+    /**
+     * Log current user
+     * @param username
+     * @return
+     */
+    public String Login(@PathParam("username") String username) throws IOException, JSONException, ParseException {
+        List<User> users = JsonFile.ReadUsers();
+        if (ListFinder.FindUserByUsername(users, username) != null) {
+            return FetchTimeline(username, 0);
+        }
+        return "";
+    }
 
     @GET
     @Path("/{username}/fetchtimeline")

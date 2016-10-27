@@ -72,6 +72,25 @@ public class TwitterParser {
     }
     
     /**
+     * Parse a list of json user to Java list of object
+     * @param usersJson
+     * @return
+     * @throws JSONException
+     */
+    public static List<User> ParseUsers(String usersJson) throws JSONException {
+        // Parse JSON to Java list
+        JSONArray jsonArray = new JSONArray(usersJson);
+        
+        // Initialize tweet list
+        List<User> users = new ArrayList();
+        for (int i=0; i<jsonArray.length(); i++) {
+            JSONObject json = jsonArray.getJSONObject(i);
+            users.add(InitializeUser(json));
+        }
+        return users;
+    }
+    
+    /**
      * Initialize tweet object from JSONObject properties
      * @param json
      * @return
