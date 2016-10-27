@@ -30,6 +30,9 @@ import twitter4j.JSONException;
  */
 public class ControllerTimeline extends HttpServlet {
     
+    private static final String Server_Url = "http://epsi-i4-twitterdashboard.cleverapps.io/";
+    private static final String Local_Url = "http://localhost:8080/";
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");  
         //<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core" %>  
@@ -45,7 +48,7 @@ public class ControllerTimeline extends HttpServlet {
             username = request.getParameter("username");  
 
             request.setAttribute("username", username);
-            url = new URL("http://localhost:8080/dash/rest/fetchtimeline/" + username + "&count=" + 20);
+            url = new URL(ControllerTimeline.Local_Url + "dash/rest/fetchtimeline/" + username + "&count=" + 20);
             connection = (HttpURLConnection) url.openConnection();
             tweets = ReadResponse(connection);
             try {
@@ -69,12 +72,12 @@ public class ControllerTimeline extends HttpServlet {
                 
                 for (int j=0; j<tabADD.length; j++) {
                     restContr.Bookmark(username, Integer.parseInt(tabADD[j]));
-                    url = new URL("http://localhost:8080/dash/rest/" + username + "/bookmark/" + Integer.parseInt(tabADD[j])); 
+                    url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/bookmark/" + Integer.parseInt(tabADD[j])); 
                     connection = (HttpURLConnection) url.openConnection();
                     ReadResponse(connection);
                 }
                 for (int j=0; j<tabDEL.length; j++) {
-                    url = new URL("http://localhost:8080/dash/rest/" + username + "/deletebookmark/" + Integer.parseInt(tabDEL[j])); 
+                    url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/deletebookmark/" + Integer.parseInt(tabDEL[j])); 
                     connection = (HttpURLConnection) url.openConnection();
                     ReadResponse(connection);
                 }
