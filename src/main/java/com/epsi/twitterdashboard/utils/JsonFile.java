@@ -26,8 +26,8 @@ import twitter4j.JSONException;
  */
 public class JsonFile {
     
-    private static final String DataBasePath = "C:\\Users\\Public\\Desktop\\database_twitter.json";
-    private static final String BookmarkPath = "C:\\Users\\Public\\Desktop\\bookmark_twitter.json";
+    private static final String DataBasePath = "\\BDD\\database_twitter.json";
+    private static final String BookmarkPath = "\\BDD\\bookmark_twitter.json";
     
     /**
      * Writes dashboard data to json file
