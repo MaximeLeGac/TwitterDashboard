@@ -31,24 +31,49 @@ public class ControllerTimeline extends HttpServlet {
     private static final String Local_Url = "http://localhost:8080/";
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
-        response.setContentType("text/html");
-
-        RestController restContr = new RestController();
         List<Tweet> listTweets = new ArrayList<Tweet>();
         String[] tabADD = null;
         String[] tabDEL = null;
         String username = "";
-        URL url = null;
         HttpURLConnection connection = null;
         String tweets = "";
         
-        username = request.getParameter("username");  
-        
+        username = request.getParameter("username");
         request.setAttribute("username", username);
         
         try {
-            url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/fetchtimeline&count=" + 20);
-            connection = (HttpURLConnection) url.openConnection();
+            URL url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/bookmark&count=" + 20);
+            connection = (HttpURLConnection) url.openConnection();           
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            /*OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            writer.write("message=" + message);
+            writer.close();*/
+            tweets = ReadResponse(connection);
+        }
+        catch (MalformedURLException e) {
+            throw new IOException("Invalid endpoint URL specified.", e);
+        }
+        finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        
+        try {
+            listTweets = TwitterParser.ParseTweets(tweets);
+        } catch (JSONException ex) {
+            Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (listTweets != null && !listTweets.isEmpty()) {
+            request.setAttribute("listTweets", listTweets);
+        }
+        
+        
+        /*try {
+            //url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/fetchtimeline&count=" + 20);
+            //connection = (HttpURLConnection) url.openConnection();
             //tweets = ReadResponse(connection);
             
             try {
@@ -61,7 +86,6 @@ public class ControllerTimeline extends HttpServlet {
                 request.setAttribute("listTweets", listTweets);
             }
         
-/*
             if (request.getParameter("ADD") != null) {
                 tabADD = request.getParameterValues("ADD");
             }
@@ -85,7 +109,6 @@ public class ControllerTimeline extends HttpServlet {
                     ReadResponse(connection);
                 }
             }
-*/
 
         } catch (MalformedURLException e) {
             throw new IOException("Invalid endpoint URL specified.", e);
@@ -93,8 +116,9 @@ public class ControllerTimeline extends HttpServlet {
             if (connection != null) {
                 connection.disconnect();
             }
-        }
+        }*/
         
+        response.setContentType("text/html");
         RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
         rd.forward(request, response); 
         
@@ -103,21 +127,32 @@ public class ControllerTimeline extends HttpServlet {
     @Override  
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Tweet> listTweets = new ArrayList<Tweet>();
-        String username = request.getParameter("username"); 
-        request.setAttribute("username", username);
-        
-        URL url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/fetchtimeline&count=" + 20);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = null;
+        String tweets = "";
         
         try {
-            listTweets.addAll(TwitterParser.ParseTweets(ReadResponse(connection)));
+            URL url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + request.getParameter("username") + "/fetchtimeline&count=" + 20);
+            connection = (HttpURLConnection) url.openConnection();           
+            connection.setDoOutput(true);
+            connection.setRequestMethod("GET");
+            tweets = ReadResponse(connection);
+            listTweets.addAll(TwitterParser.ParseTweets(tweets));
+            request.setAttribute("listTweets", listTweets);
+        }
+        catch (MalformedURLException ex) {
+            Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
             Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        if (!listTweets.isEmpty()) {
-            request.setAttribute("listTweets", listTweets);
+        finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
+        
+        response.setContentType("text/html");
+        RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
+        rd.forward(request, response); 
     }
     
     /**

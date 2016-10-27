@@ -12,7 +12,7 @@
   <body>
     <h1>Timeline</h1>
     
-    <form action="ControllerTimeline" method="post">  
+    <form action="ControllerTimeline" method="get">
         <input type="text" name="username">
         <input type="submit" value="search">  
     </form>
