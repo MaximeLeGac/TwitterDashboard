@@ -5,16 +5,16 @@
  */
 package com.epsi.twitterdashboard.controller;
 
+import com.epsi.twitterdashboard.model.User;
+import com.epsi.twitterdashboard.service.RestController;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.RequestDispatcher;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,39 +22,115 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SubscribeController extends HttpServlet {
     
+    private static final String Server_Url = "http://epsi-i4-twitterdashboard.cleverapps.io/";
+    private static final String Local_Url = "http://localhost:8080/";
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");
         
+        URL url = null;
+        HttpURLConnection connection = null;
+        String rep = "";
+        
+        String username = request.getParameter("user");
+        String password = request.getParameter("mdp");
+        String pseudo = request.getParameter("pseudo");
+        String ville = request.getParameter("ville");
+        
+        User user = new User();
+        user.setName(username);
+        user.setPassword(password);
+        user.setScreenName(pseudo);
+        user.setLocation(ville);
+        
         try {
+            url = new URL(SubscribeController.Local_Url + "dash/rest/subscribe");
+            connection = (HttpURLConnection) url.openConnection();        
+            connection.setDoOutput(true);
+            connection.setDoInput(true); 
+            connection.setRequestMethod("POST"); 
             
-            String username = request.getParameter("user");
-            String password = request.getParameter("mdp");
+            ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
+            out.writeObject(user);
+            out.flush();
+            out.close();
             
-            String url = "jdbc:mysql://localhost/phpmyadmin";
-            String user = "root";
-            String passwd = "";
             
-            Connection connection = DriverManager.getConnection(url, user, passwd); 
-            PreparedStatement insertNew = connection.prepareStatement("INSERT INTO utilisateur(name, password) VALUES (?,?)");
-            insertNew.setString(1, username);             //INT   field type
-            insertNew.setString(2, password);  //OTHER field type
-            insertNew.executeUpdate();
-            
-            connection.commit();
-            connection.close();
-            
-            RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-            rd.forward(request, response);
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(SubscribeController.class.getName()).log(Level.SEVERE, null, ex);
+            rep = ReadResponse(connection);
+
+        } catch (MalformedURLException e) {
+            throw new IOException("Invalid endpoint URL specified.", e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
         
     }
   
     @Override  
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)   throws ServletException, IOException {  
-        doPost(req, resp);  
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)   throws ServletException, IOException {  
+        response.setContentType("text/html");
+        
+        URL url = null;
+        HttpURLConnection connection = null;
+        String rep = "";
+        
+        String username = request.getParameter("user");
+        String password = request.getParameter("mdp");
+        String pseudo = request.getParameter("pseudo");
+        String ville = request.getParameter("ville");
+        
+        User user = new User();
+        user.setName(username);
+        user.setPassword(password);
+        user.setScreenName(pseudo);
+        user.setLocation(ville);
+        
+        RestController restContr = new RestController();
+        restContr.Subscribe(user);
+        
+            /*
+            url = new URL(SubscribeController.Local_Url + "dash/rest/subscribe");
+            connection = (HttpURLConnection) url.openConnection();  
+            
+            connection.setDoOutput(true);
+            connection.setDoInput(true); 
+            connection.setRequestMethod("POST"); 
+            connection.setUseCaches(false);
+            connection.setRequestProperty("Content-type", "application/x-java-serialized-object");
+            
+            
+            ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
+            out.writeObject(user);
+            out.flush();
+            out.close();
+            
+            rep = ReadResponse(connection);
+
+            if (connection != null) {
+                connection.disconnect();
+            }
+            */
+            
+        
+    }
+    
+    /**
+     * Allows to read a http response
+     * @param connection
+     * @return the response as string
+     * @throws IOException
+     */
+    private static String ReadResponse(HttpURLConnection connection) throws IOException {
+        InputStreamReader isr = new InputStreamReader(connection.getInputStream());
+        BufferedReader br = new BufferedReader(isr);
+        StringBuilder str = new StringBuilder();
+        String line;
+        while((line = br.readLine()) != null) {
+            str.append(line).append(System.getProperty("line.separator"));
+        }
+        return str.toString();
     }
     
 }

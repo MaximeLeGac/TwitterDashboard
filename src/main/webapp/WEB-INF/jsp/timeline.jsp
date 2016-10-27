@@ -35,6 +35,13 @@
             <table>
                 <tr>
                     <td>
+                        <%
+                            List<Tweet> listTweets = (List) request.getAttribute("styles");
+                            Iterator it = listTweets.iterator();
+                            while(it.hasNext()) {
+                              out.print("<br>Tweet : " + ((Tweet) it.next()).getBody());
+                            }
+                        %>
                     </td>
                 </tr>
             </table>

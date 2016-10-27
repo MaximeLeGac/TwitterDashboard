@@ -8,11 +8,6 @@ package com.epsi.twitterdashboard.controller;
 import com.epsi.twitterdashboard.model.Tweet;
 import com.epsi.twitterdashboard.service.RestController;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,7 +37,7 @@ public class LoginController extends HttpServlet {
         } catch (ParseException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!"".equals(listTweets)) {
+        if (listTweets != null) {
             request.setAttribute("listTweets", listTweets);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
             rd.forward(request, response);
@@ -64,7 +59,7 @@ public class LoginController extends HttpServlet {
         } catch (ParseException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!"".equals(listTweets)) {
+        if (listTweets != null) {
             request.setAttribute("listTweets", listTweets);
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
             rd.forward(request, response);
