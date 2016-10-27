@@ -10,6 +10,7 @@ public class User {
     // ********** PRIVATE FIELDS **********
     private int id;
     private String Name;
+    private String Password;
     private String ScreenName;
     private String Location;
     private String Description;
@@ -28,6 +29,13 @@ public class User {
     }
     public void setName(String name) {
         this.Name = name;
+    }
+    
+    public String getPassword() {
+        return Password;
+    }
+    public void setPassword(String password) {
+        this.Password = password;
     }
     
     public String getScreenName() {

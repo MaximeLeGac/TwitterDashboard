@@ -17,14 +17,21 @@
         <form action="SubscribeController" methode="post">
         
             <div>
-                
                 <label>
                     <b>Login</b>
-                    <input type="text" id="user">
+                    <input type="text" id="user" name="user">
                 </label>
                 <label>
                     <b>Mot de passe</b>
-                    <input type="password" id="mdp">
+                    <input type="password" id="mdp" name="mdp">
+                </label>
+                <label>
+                    <b>Pseudo</b>
+                    <input type="text" id="pseudo" name="pseudo">
+                </label>
+                <label>
+                    <b>Ville</b>
+                    <input type="password" id="ville" name="ville">
                 </label>
                 
                 <label>
