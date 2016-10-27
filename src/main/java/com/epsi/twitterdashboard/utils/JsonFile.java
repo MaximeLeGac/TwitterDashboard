@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +54,9 @@ public class JsonFile {
      */
     public static void AddUser(User user) {
         List<User> users = ReadUsers();
+        if (users == null) {
+            users = new ArrayList<User>();
+        }
         users.add(user);
         JSONArray jsonUsers = new JSONArray(users);
         Write(JsonFile.UsersPath, jsonUsers.toString());
@@ -64,9 +68,11 @@ public class JsonFile {
      */
     public static void DeleteUser(int id) {
         List<User> users = ReadUsers();
-        users.remove(ListFinder.FindUserById(users, id));
-        JSONArray jsonUsers = new JSONArray(users);
-        Write(JsonFile.UsersPath, jsonUsers.toString());
+        if (users == null) {
+            users.remove(ListFinder.FindUserById(users, id));
+            JSONArray jsonUsers = new JSONArray(users);
+            Write(JsonFile.UsersPath, jsonUsers.toString());
+        }
     }
     
     /**
@@ -76,6 +82,9 @@ public class JsonFile {
     public static void AddBookmark(String username, int id) {
         List<Tweet> database = ReadDatabase(username);
         List<Tweet> bookmarks = ReadBookmarks(username);
+        if (bookmarks == null) {
+            bookmarks = new ArrayList<Tweet>();
+        }
         bookmarks.add(ListFinder.FindTweetById(database, id));
         JSONArray jsonBookmark = new JSONArray(bookmarks);
         Write(String.format(JsonFile.BookmarkPath, username), jsonBookmark.toString());
@@ -87,9 +96,11 @@ public class JsonFile {
      */
     public static void DeleteBookmark(String username, int id) {
         List<Tweet> bookmarks = ReadBookmarks(username);
-        bookmarks.remove(ListFinder.FindTweetById(bookmarks, id));
-        JSONArray jsonBookmark = new JSONArray(bookmarks);
-        Write(String.format(JsonFile.BookmarkPath, username), jsonBookmark.toString());
+        if (bookmarks == null) {
+            bookmarks.remove(ListFinder.FindTweetById(bookmarks, id));
+            JSONArray jsonBookmark = new JSONArray(bookmarks);
+            Write(String.format(JsonFile.BookmarkPath, username), jsonBookmark.toString());
+        }
     }
     
     /**
