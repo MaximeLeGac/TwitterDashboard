@@ -61,7 +61,7 @@ public class RestTwitterApi {
                 connection.disconnect();
             }
         }
-        return TwitterParser.ParseTweets(tweets);
+        return TwitterParser.ParseDatabase(tweets);
     }
     
     /**

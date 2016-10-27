@@ -1,5 +1,6 @@
 package com.epsi.twitterdashboard.parser;
 
+import com.epsi.twitterdashboard.utils.JsonFile;
 import com.epsi.twitterdashboard.model.Tweet;
 import com.epsi.twitterdashboard.model.User;
 import java.text.ParseException;
@@ -27,6 +28,28 @@ public class TwitterParser {
      */
     public static Tweet ParseTweet(String tweetJson) throws JSONException {
         return InitializeTweet(new JSONObject(tweetJson));
+    }
+    
+    /**
+     * Parse a list of json tweet to Java list of object
+     * @param tweetsJson
+     * @return
+     * @throws JSONException
+     */
+    public static List<Tweet> ParseDatabase(String tweetsJson) throws JSONException {
+        // Parse JSON to Java list
+        JSONArray jsonArray = new JSONArray(tweetsJson);
+        
+        // Keeps tweets into a local file
+        JsonFile.WriteDatabase(jsonArray);
+        
+        // Initialize tweet list
+        List<Tweet> tweets = new ArrayList();
+        for (int i=0; i<jsonArray.length(); i++) {
+            JSONObject json = jsonArray.getJSONObject(i);
+            tweets.add(InitializeTweet(json));
+        }
+        return tweets;
     }
     
     /**
@@ -78,9 +101,7 @@ public class TwitterParser {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date creationDate = sdf.parse(json.getString("created_at"));
             tweet.setCreationDate(creationDate);
-        } catch (ParseException ex) {
-            Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
+        } catch (ParseException | JSONException ex) {
             Logger.getLogger(TwitterParser.class.getName()).log(Level.SEVERE, null, ex);
         }
         
