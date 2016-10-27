@@ -20,7 +20,14 @@
             <%
                 String uname = (String) request.getAttribute("username");
                 out.print("<h1>" + uname + "</h1>");
-            %>
+                
+                List<Tweet> listTweets = (List) request.getAttribute("listTweets");
+
+                Iterator it = listTweets.iterator();
+                while(it.hasNext()) {
+                  out.print("<br>Tweet : " + ((Tweet) it.next()).getBody());
+                }
+           %>
 
             <input type="text" name="username">
             <input type="submit" value="search">
