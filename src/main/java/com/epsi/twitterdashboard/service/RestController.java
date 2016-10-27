@@ -28,20 +28,30 @@ public class RestController {
     }
 
     @GET
-    @Path("/bookmark/{id}")
+    @Path("/{username}/bookmarks")
     /**
-     * Bookmarks a tweet
+     * Get user bookmarks
      */
-    public void Bookmark(@PathParam("id") int id) {
-        JsonFile.AddBookmark(id);
+    public String GetBookmarks(@PathParam("username") String username) {
+        JSONArray bookmarks = new JSONArray(JsonFile.ReadBookmarks(username));
+        return bookmarks.toString();
     }
 
     @GET
-    @Path("/deletebookmark/{id}")
+    @Path("/{username}/bookmark/{id}")
+    /**
+     * Bookmarks a tweet
+     */
+    public void Bookmark(@PathParam("username") String username, @PathParam("id") int id) {
+        JsonFile.AddBookmark(username, id);
+    }
+
+    @GET
+    @Path("/{username}/deletebookmark/{id}")
     /**
      * Get specific user timeline
      */
-    public void DeleteBookmark(@PathParam("id") int id) {
-        JsonFile.DeleteBookmark(id);
+    public void DeleteBookmark(@PathParam("username") String username, @PathParam("id") int id) {
+        JsonFile.DeleteBookmark(username, id);
     }
 }

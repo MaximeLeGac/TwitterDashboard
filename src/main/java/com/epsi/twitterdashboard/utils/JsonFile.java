@@ -26,54 +26,54 @@ import twitter4j.JSONException;
  */
 public class JsonFile {
     
-    private static final String DataBasePath = "\\BDD\\database_twitter.json";
-    private static final String BookmarkPath = "\\BDD\\bookmark_twitter.json";
+    private static final String DataBasePath = "\\BDD\\{0}_database_twitter.json";
+    private static final String BookmarkPath = "\\BDD\\{0}_bookmark_twitter.json";
     
     /**
      * Writes dashboard data to json file
      * @param database 
      */
-    public static void WriteDatabase(JSONArray database) {
-        Write(JsonFile.DataBasePath, database.toString());
+    public static void WriteDatabase(String username, JSONArray database) {
+        Write(String.format(JsonFile.DataBasePath, username), database.toString());
     }
     
     /**
      * Add dashboard bookmark to json file
      * @param id 
      */
-    public static void AddBookmark(int id) {
-        List<Tweet> database = ReadDatabase();
-        List<Tweet> bookmarks = ReadBookmarks();
+    public static void AddBookmark(String username, int id) {
+        List<Tweet> database = ReadDatabase(username);
+        List<Tweet> bookmarks = ReadBookmarks(username);
         bookmarks.add(TweetFinder.FindById(database, id));
         JSONArray jsonBookmark = new JSONArray(bookmarks);
-        Write(JsonFile.BookmarkPath, jsonBookmark.toString());
+        Write(String.format(JsonFile.BookmarkPath, username), jsonBookmark.toString());
     }
     
     /**
      * Delete dashboard bookmark from json file
      * @param id 
      */
-    public static void DeleteBookmark(int id) {
-        List<Tweet> bookmarks = ReadBookmarks();
+    public static void DeleteBookmark(String username, int id) {
+        List<Tweet> bookmarks = ReadBookmarks(username);
         bookmarks.remove(TweetFinder.FindById(bookmarks, id));
         JSONArray jsonBookmark = new JSONArray(bookmarks);
-        Write(JsonFile.BookmarkPath, jsonBookmark.toString());
+        Write(String.format(JsonFile.BookmarkPath, username), jsonBookmark.toString());
     }
     
     /**
      * Gets database data
      * @return 
      */
-    public static List<Tweet> ReadDatabase() {
-        return Read(JsonFile.DataBasePath);
+    public static List<Tweet> ReadDatabase(String username) {
+        return Read(String.format(JsonFile.DataBasePath, username));
     }
     
     /**
      * Gets bookmarks data
      * @return 
      */
-    public static List<Tweet> ReadBookmarks() {
-        return Read(JsonFile.BookmarkPath);
+    public static List<Tweet> ReadBookmarks(String username) {
+        return Read(String.format(JsonFile.BookmarkPath, username));
     }
     
     /**

@@ -11,29 +11,24 @@ import com.epsi.twitterdashboard.service.RestController;
 import java.io.BufferedReader;
 import java.io.IOException;  
 import java.io.InputStreamReader;
-import java.io.PrintWriter;  
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.RequestDispatcher;  
 import javax.servlet.ServletException;  
 import javax.servlet.http.HttpServlet;  
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
 import twitter4j.JSONException;
-import twitter4j.TwitterException;
 
 /**
  *
  * @author MLG
  */
 public class ControllerTimeline extends HttpServlet {
-    
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
         response.setContentType("text/html");  
@@ -50,16 +45,16 @@ public class ControllerTimeline extends HttpServlet {
             username = request.getParameter("username");  
 
             request.setAttribute("username", username);
-            url = new URL("http://localhost:8080/dash/rest/fetchtimeline/username=" + username + "&count=" + 20);
+            url = new URL("http://localhost:8080/dash/rest/fetchtimeline/" + username + "&count=" + 20);
             connection = (HttpURLConnection) url.openConnection();
             tweets = ReadResponse(connection);
             try {
-                listTweets = TwitterParser.ParseDatabase(tweets);
+                listTweets = TwitterParser.ParseTweets(tweets);
             } catch (JSONException ex) {
                 Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            if (!(listTweets == null || listTweets.isEmpty())) {
+            if (listTweets != null && !listTweets.isEmpty()) {
                 request.setAttribute("listTweets", listTweets);
             }
             RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
@@ -73,13 +68,13 @@ public class ControllerTimeline extends HttpServlet {
                 String[] tabDEL = request.getParameterValues("DEL");
                 
                 for (int j=0; j<tabADD.length; j++) {
-                    restContr.Bookmark(Integer.parseInt(tabADD[j]));
-                    url = new URL("http://localhost:8080/bookmark/id=" + Integer.parseInt(tabADD[j])); 
+                    restContr.Bookmark(username, Integer.parseInt(tabADD[j]));
+                    url = new URL("http://localhost:8080/dash/rest/" + username + "/bookmark/" + Integer.parseInt(tabADD[j])); 
                     connection = (HttpURLConnection) url.openConnection();
                     ReadResponse(connection);
                 }
                 for (int j=0; j<tabDEL.length; j++) {
-                    url = new URL("http://localhost:8080/deletebookmark/id=" + Integer.parseInt(tabDEL[j])); 
+                    url = new URL("http://localhost:8080/dash/rest/" + username + "/deletebookmark/" + Integer.parseInt(tabDEL[j])); 
                     connection = (HttpURLConnection) url.openConnection();
                     ReadResponse(connection);
                 }
@@ -92,12 +87,10 @@ public class ControllerTimeline extends HttpServlet {
     }
   
     @Override  
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)  
-            throws ServletException, IOException {  
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)   throws ServletException, IOException {  
         doPost(req, resp);  
     }
     
-
     /**
      * Allows to read a http response
      * @param connection

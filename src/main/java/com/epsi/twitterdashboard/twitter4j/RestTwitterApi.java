@@ -42,7 +42,7 @@ public class RestTwitterApi {
         HttpsURLConnection connection = null;
         String tweets = "";
         try {
-            URL url = new URL("https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + username + (numberLimit > 0 ? "&count=" + numberLimit : "")); 
+            URL url = new URL("https://api.twitter.com/1.1/statuses/home_timeline.json?screen_name=" + username + (numberLimit > 0 ? "&count=" + numberLimit : "")); 
             connection = (HttpsURLConnection) url.openConnection();           
             connection.setDoOutput(true);
             connection.setDoInput(true); 
@@ -61,7 +61,7 @@ public class RestTwitterApi {
                 connection.disconnect();
             }
         }
-        return TwitterParser.ParseDatabase(tweets);
+        return TwitterParser.ParseDatabase(username, tweets);
     }
     
     /**

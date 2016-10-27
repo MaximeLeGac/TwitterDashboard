@@ -36,12 +36,12 @@ public class TwitterParser {
      * @return
      * @throws JSONException
      */
-    public static List<Tweet> ParseDatabase(String tweetsJson) throws JSONException {
+    public static List<Tweet> ParseDatabase(String username, String tweetsJson) throws JSONException {
         // Parse JSON to Java list
         JSONArray jsonArray = new JSONArray(tweetsJson);
         
         // Keeps tweets into a local file
-        JsonFile.WriteDatabase(jsonArray);
+        JsonFile.WriteDatabase(username, jsonArray);
         
         // Initialize tweet list
         List<Tweet> tweets = new ArrayList();
