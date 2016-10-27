@@ -46,23 +46,6 @@
             <table>
                 <tr>
                     <td>
-                        <%
-                            List<Tweet> listTweets = (List) request.getAttribute("listTweets");
-
-                            if (!(listTweets == null || listTweets.isEmpty())) {
-                                for (Tweet tweet : listTweets) {
-                                    out.print(tweet.getBody());
-                                    out.print("</td><td>");
-                                    //out.print("<input type=\"button\" value=\"Ajouter Bookmark\" onClick=\"ajoutBook(" + tweet.getId() + ")\">");
-                                    //out.print("<input type=\"button\" value=\"Supprimer Bookmark\" onClick=\"suppBook(" + tweet.getId() + ")\">");
-                                    out.print("<br>Ajouter Bookmark <input type=\"checkbox\" name=\"ADD\" value=\"" + tweet.getId() + "\">");
-                                    out.print("Supprimer Bookmark <input type=\"checkbox\" name=\"DEL\" value=\"" + tweet.getId() + "\">");
-                                    
-                                    out.print("</td></tr><tr><td>");
-                                }
-                            }
-
-                        %>
                     </td>
                 </tr>
             </table>

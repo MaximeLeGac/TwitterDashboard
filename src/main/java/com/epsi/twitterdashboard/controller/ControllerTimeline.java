@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;  
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,58 +35,72 @@ public class ControllerTimeline extends HttpServlet {
     private static final String Local_Url = "http://localhost:8080/";
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {  
-        response.setContentType("text/html");  
-        //<%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core" %>  
+        response.setContentType("text/html");
 
+        RequestDispatcher rd = null;
         RestController restContr = new RestController();
         List<Tweet> listTweets = new ArrayList<Tweet>();
+        String[] tabADD = null;
+        String[] tabDEL = null;
         String username = "";
         URL url = null;
         HttpURLConnection connection = null;
         String tweets = "";
         
-        if (request.getParameter("username") != null) {
-            username = request.getParameter("username");  
-
-            request.setAttribute("username", username);
+        username = request.getParameter("username");  
+        
+        request.setAttribute("username", username);
+        
+        try {
             url = new URL(ControllerTimeline.Local_Url + "dash/rest/fetchtimeline/" + username + "&count=" + 20);
             connection = (HttpURLConnection) url.openConnection();
             tweets = ReadResponse(connection);
+            
             try {
                 listTweets = TwitterParser.ParseTweets(tweets);
             } catch (JSONException ex) {
                 Logger.getLogger(ControllerTimeline.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             if (listTweets != null && !listTweets.isEmpty()) {
                 request.setAttribute("listTweets", listTweets);
             }
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
-            rd.forward(request, response);
-        } else {
-            username = (String) request.getAttribute("username");
-            listTweets = (List<Tweet>) request.getAttribute("listTweets");
-            
-            for (int i = 0; i < listTweets.size(); i++) {
-                String[] tabADD = request.getParameterValues("ADD");
-                String[] tabDEL = request.getParameterValues("DEL");
-                
+        
+/*
+            if (request.getParameter("ADD") != null) {
+                tabADD = request.getParameterValues("ADD");
+            }
+            if (request.getParameter("ADD") != null) {
+                tabDEL = request.getParameterValues("DEL");
+            }
+
+            if (tabADD != null && tabADD.length != 0) {
                 for (int j=0; j<tabADD.length; j++) {
                     restContr.Bookmark(username, Integer.parseInt(tabADD[j]));
                     url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/bookmark/" + Integer.parseInt(tabADD[j])); 
                     connection = (HttpURLConnection) url.openConnection();
                     ReadResponse(connection);
                 }
+            }
+
+            if (tabDEL != null && tabDEL.length != 0) {
                 for (int j=0; j<tabDEL.length; j++) {
                     url = new URL(ControllerTimeline.Local_Url + "dash/rest/" + username + "/deletebookmark/" + Integer.parseInt(tabDEL[j])); 
                     connection = (HttpURLConnection) url.openConnection();
                     ReadResponse(connection);
                 }
             }
-            
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
-            rd.forward(request, response); 
+*/
+        } catch (MalformedURLException e) {
+            throw new IOException("Invalid endpoint URL specified.", e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
+        
+        rd = request.getRequestDispatcher("WEB-INF/jsp/timeline.jsp");
+        rd.forward(request, response); 
         
     }
   
